@@ -142,7 +142,7 @@ for event in longpoll.listen():
             else:
                 sender(user_id, 'напиши что-нибудь нормальное')
 
-  # for element in Search:
+  # for element in Search: asd
   #                       if element.find(str(user_id)) != -1:
   #                           sender(user_id, 'пошел нахуй петушара')
   #                       else:
