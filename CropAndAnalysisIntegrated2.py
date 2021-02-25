@@ -11,7 +11,7 @@ from iteration_utilities import duplicates
 
 now = datetime.datetime.now()
 todaysdayNum = now.isoweekday()
-
+#Какой-то коммент
 pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 config = '--oem 3 --psm 6'
 
