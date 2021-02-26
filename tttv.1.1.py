@@ -9,43 +9,9 @@ session_api = vk_session.get_api()
 longpoll = VkLongPoll(vk_session)
 
 
-def subscribe(id):
-    try:
-        with open(r'groups\idGroup.txt', 'r+') as File:
-            for id in File:
-                stringFromFile = File.readline()
-                if stringFromFile.find(str(id)) != -1:
-                    SomeBool = True
-                else:
-                    Somebool = False
-        return SomeBool
-    except Exception:
-        print('error')
-
-
-def unSubscribe(id):
-    try:
-        with open(r'groups\idGroup.txt', 'rw+') as File:
-            for id in File:
-                if id.find(str(user_id)) != -1:
-                    SomeBool = True
-                else:
-                    SomeBool = False
-        return SomeBool
-    except Exception:
-        print('проблемы с отпиской')
-
-
-# for element in Readlines_Copy:
-#     if element.find(str(user_id)) != -1:
-#         sender(user_id, 'Вы были успешно отписаны от ежедневной рассылки расписания')
-#         Readlines_Copy.pop(Readlines_Copy.index(element))
-#         with open('groups\idGroup.txt', 'w+') as File:
-#             File.writelines(Readlines_Copy)
 
 def sender(id, text):
-    vk_session.method('messages.send', {'user_id': id, 'message': text, 'random_id': 0})
-
+    vk_session.method('messages.send', {'user_id':id, 'message': text, 'random_id': 0})
 
 for event in longpoll.listen():
 
@@ -71,8 +37,7 @@ for event in longpoll.listen():
             print(SomeBool)
             if msg == 'подписка 801а2':
                 if SomeBool == True:
-                    sender(user_id,
-                           'Вы уже есть в нашей базе данных для подписок, желаете удалить себя из базы данных? Тогда напишите "Отписка"')
+                    sender(user_id, 'Вы уже есть в нашей базе данных для подписок, желаете удалить себя из базы данных? Тогда напишите "Отписка"')
                 elif SomeBool == False:
                     with open('groups\idGroup.txt', 'a+') as File:
                         File.write(str(user_id) + ', 801a2\n')
@@ -158,27 +123,29 @@ for event in longpoll.listen():
                         File.write(str(user_id) + ', 803г1\n')
                     sender(user_id, 'Вы были успешно подписаны на ежедневное получение расписания группы 803г1')
             elif msg == 'подписка 803г2':
-                subscribe(user_id)
                 if SomeBool == True:
-                    sender(user_id, 'Вы уже есть в нашей базе данных для подписок, желаете удалить себя из базы '
-                                    'данных? Тогда напишите "Отписка"')
+                    sender(user_id,
+                           'Вы уже есть в нашей базе данных для подписок, желаете удалить себя из базы данных? Тогда напишите "Отписка"')
                 elif SomeBool == False:
                     with open('groups\idGroup.txt', 'a+') as File:
                         File.write(str(user_id) + ', 803г2\n')
                     sender(user_id, 'Вы были успешно подписаны на ежедневное получение расписания группы 803г2')
-            elif msg == 'отписка':
-                unSubscribe(user_id)
-                if SomeBool == True:
-                    sender(user_id, 'Вы были успешно отписаны от ежедневной рассылки расписания')
-                else:
-                    sender(user_id, 'Мы не можем вас отписать так как вы не подписаны')
+            elif msg == 'отписка' and SomeBool == True:
+                for element in Readlines_Copy:
+                    if element.find(str(user_id)) != -1:
+                        sender(user_id, 'Вы были успешно отписаны от ежедневной рассылки расписания')
+                        Readlines_Copy.pop(Readlines_Copy.index(element))
+                        with open('groups\idGroup.txt', 'w+') as File:
+                            File.writelines(Readlines_Copy)
+            elif msg == 'отписка' and SomeBool == False:
+                sender(user_id, 'Мы не можем вас отписать так как вы не подписаны')
             else:
                 sender(user_id, 'напиши что-нибудь нормальное')
 
-# for element in Search: asd asdasdasdxyCYXcYXC
-#                       if element.find(str(user_id)) != -1:
-#                           sender(user_id, 'пошел нахуй петушара')
-#                       else:
+  # for element in Search: asd asdasdasdxyCYXcYXC
+  #                       if element.find(str(user_id)) != -1:
+  #                           sender(user_id, 'пошел нахуй петушара')
+  #                       else:
 
 # if msg == 'подписка 801а2':
 #     File = open('groups\idGroup.txt', '+a')
