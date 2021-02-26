@@ -10,20 +10,22 @@ longpoll = VkLongPoll(vk_session)
 
 
 def subscribe(id):
+    
     try:
         with open(r'groups\idGroup.txt', 'r+') as File:
-            for id in File:
-                stringFromFile = File.readline()
-                if stringFromFile.find(str(id)) != -1:
-                    SomeBool = True
-                else:
-                    Somebool = False
+            stringFromFile = File.readline()
+            if id in stringFromFile:
+                SomeBool = True
+            else:
+                Somebool = False
         return SomeBool
-    except Exception:
-        print('error')
+    except Exception as someException:
+        print('error' + str(someException))
+    File.close()
 
 
 def unSubscribe(id):
+    global SomeBool
     try:
         with open(r'groups\idGroup.txt', 'rw+') as File:
             for id in File:
@@ -32,8 +34,9 @@ def unSubscribe(id):
                 else:
                     SomeBool = False
         return SomeBool
-    except Exception:
-        print('проблемы с отпиской')
+    except Exception as someException:
+        print('проблемы с отпиской' + str(someException))
+    File.close()
 
 
 # for element in Readlines_Copy:
