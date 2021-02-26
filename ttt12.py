@@ -10,7 +10,7 @@ longpoll = VkLongPoll(vk_session)
 
 
 def subscribe(id):
-    
+    global SomeBool
     try:
         with open(r'groups\idGroup.txt', 'r+') as File:
             stringFromFile = File.readline()
