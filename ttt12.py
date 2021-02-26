@@ -1,8 +1,5 @@
 import vk_api
 from vk_api.longpoll import VkLongPoll, VkEventType
-import requests
-from bs4 import BeautifulSoup
-import time
 
 vk_session = vk_api.VkApi(token='3e10411afa19524cd71d25430998b81c23509e03b1493c1000d60396e1cbce4e3f95b106d1d16bc541996')
 session_api = vk_session.get_api()
@@ -12,39 +9,21 @@ longpoll = VkLongPoll(vk_session)
 def subscribe(id):
     global SomeBool
     try:
-        with open(r'groups\idGroup.txt', 'r+') as File:
-            stringFromFile = File.readline()
-            if id in stringFromFile:
-                SomeBool = True
-            else:
-                Somebool = False
-        return SomeBool
-    except Exception as someException:
-        print('error' + str(someException))
-    File.close()
-
-
-def unSubscribe(id):
-    global SomeBool
-    try:
-        with open(r'groups\idGroup.txt', 'rw+') as File:
-            for id in File:
-                if id.find(str(user_id)) != -1:
+        with open(r'groups\idGroup.txt', 'r+') as f:
+            if f.readlines() != 0:
+                with open(r'groups\idGroup.txt', 'r+') as f:
+                    stringFromFile = f.readline()
+                if str(id) in stringFromFile:
                     SomeBool = True
                 else:
                     SomeBool = False
-        return SomeBool
+                return SomeBool
+            else:
+                SomeBool = False
     except Exception as someException:
-        print('проблемы с отпиской' + str(someException))
-    File.close()
+        print('error' + str(someException))
+    f.close()
 
-
-# for element in Readlines_Copy:
-#     if element.find(str(user_id)) != -1:
-#         sender(user_id, 'Вы были успешно отписаны от ежедневной рассылки расписания')
-#         Readlines_Copy.pop(Readlines_Copy.index(element))
-#         with open('groups\idGroup.txt', 'w+') as File:
-#             File.writelines(Readlines_Copy)
 
 def sender(id, text):
     vk_session.method('messages.send', {'user_id': id, 'message': text, 'random_id': 0})
@@ -59,7 +38,7 @@ for event in longpoll.listen():
             msg = event.text.lower()
             user_id = event.user_id
             print(msg)
-            with open('groups\idGroup.txt') as File:
+            with open(r'groups\idGroup.txt') as File:
                 Readlines = File.readlines()
 
             Readlines_Copy = Readlines
@@ -73,105 +52,116 @@ for event in longpoll.listen():
                     SomeBool = False
             print(SomeBool)
             if msg == 'подписка 801а2':
-                if SomeBool == True:
-                    sender(user_id,
-                           'Вы уже есть в нашей базе данных для подписок, желаете удалить себя из базы данных? Тогда напишите "Отписка"')
-                elif SomeBool == False:
-                    with open('groups\idGroup.txt', 'a+') as File:
+                subscribe(user_id)
+                if SomeBool:
+                    sender(user_id, 'Вы уже есть в нашей базе данных для подписок, желаете удалить себя из базы '
+                                    'данных? Тогда напишите "Отписка"')
+                elif not SomeBool:
+                    with open(r'groups\idGroup.txt', 'a+') as File:
                         File.write(str(user_id) + ', 801a2\n')
                     sender(user_id, 'Вы были успешно подписаны на ежедневное получение расписания группы 801а2')
             elif msg == 'подписка 801а1':
-                if SomeBool == True:
-                    sender(user_id,
-                           'Вы уже есть в нашей базе данных для подписок, желаете удалить себя из базы данных? Тогда напишите "Отписка"')
-                elif SomeBool == False:
-                    with open('groups\idGroup.txt', 'a+') as File:
+                subscribe(user_id)
+                if SomeBool:
+                    sender(user_id, 'Вы уже есть в нашей базе данных для подписок, желаете удалить себя из базы '
+                                    'данных? Тогда напишите "Отписка"')
+                elif not SomeBool:
+                    with open(r'groups\idGroup.txt', 'a+') as File:
                         File.write(str(user_id) + ', 801a1\n')
                     sender(user_id, 'Вы были успешно подписаны на ежедневное получение расписания группы 801а1')
             elif msg == 'подписка 801б1':
-                if SomeBool == True:
-                    sender(user_id,
-                           'Вы уже есть в нашей базе данных для подписок, желаете удалить себя из базы данных? Тогда напишите "Отписка"')
-                elif SomeBool == False:
-                    with open('groups\idGroup.txt', 'a+') as File:
+                subscribe(user_id)
+                if SomeBool:
+                    sender(user_id, 'Вы уже есть в нашей базе данных для подписок, желаете удалить себя из базы '
+                                    'данных? Тогда напишите "Отписка"')
+                elif not SomeBool:
+                    with open(r'groups\idGroup.txt', 'a+') as File:
                         File.write(str(user_id) + ', 80б1\n')
                     sender(user_id, 'Вы были успешно подписаны на ежедневное получение расписания группы 801б1')
             elif msg == '801б2':
-                if SomeBool == True:
-                    sender(user_id,
-                           'Вы уже есть в нашей базе данных для подписок, желаете удалить себя из базы данных? Тогда напишите "Отписка"')
-                elif SomeBool == False:
-                    with open('groups\idGroup.txt', 'a+') as File:
+                subscribe(user_id)
+                if SomeBool:
+                    sender(user_id, 'Вы уже есть в нашей базе данных для подписок, желаете удалить себя из базы '
+                                    'данных? Тогда напишите "Отписка"')
+                elif not SomeBool:
+                    with open(r'groups\idGroup.txt', 'a+') as File:
                         File.write(str(user_id) + ', 801б2\n')
                     sender(user_id, 'Вы были успешно подписаны на ежедневное получение расписания группы 801б2')
             elif msg == 'подписка 803а1':
-                if SomeBool == True:
-                    sender(user_id,
-                           'Вы уже есть в нашей базе данных для подписок, желаете удалить себя из базы данных? Тогда напишите "Отписка"')
-                elif SomeBool == False:
-                    with open('groups\idGroup.txt', 'a+') as File:
+                subscribe(user_id)
+                if SomeBool:
+                    sender(user_id, 'Вы уже есть в нашей базе данных для подписок, желаете удалить себя из базы '
+                                    'данных? Тогда напишите "Отписка"')
+                elif not SomeBool:
+                    with open(r'groups\idGroup.txt', 'a+') as File:
                         File.write(str(user_id) + ', 803a1\n')
                     sender(user_id, 'Вы были успешно подписаны на ежедневное получение расписания группы 803а1')
             elif msg == 'подписка 803а2':
-                if SomeBool == True:
-                    sender(user_id,
-                           'Вы уже есть в нашей базе данных для подписок, желаете удалить себя из базы данных? Тогда напишите "Отписка"')
-                elif SomeBool == False:
-                    with open('groups\idGroup.txt', 'a+') as File:
+                subscribe(user_id)
+                if SomeBool:
+                    sender(user_id, 'Вы уже есть в нашей базе данных для подписок, желаете удалить себя из базы '
+                                    'данных? Тогда напишите "Отписка"')
+                elif not SomeBool:
+                    with open(r'groups\idGroup.txt', 'a+') as File:
                         File.write(str(user_id) + ', 803a2\n')
                     sender(user_id, 'Вы были успешно подписаны на ежедневное получение расписания группы 803а2')
             elif msg == 'подписка 803б2':
-                if SomeBool == True:
-                    sender(user_id,
-                           'Вы уже есть в нашей базе данных для подписок, желаете удалить себя из базы данных? Тогда напишите "Отписка"')
-                elif SomeBool == False:
-                    with open('groups\idGroup.txt', 'a+') as File:
+                subscribe(user_id)
+                if SomeBool:
+                    sender(user_id, 'Вы уже есть в нашей базе данных для подписок, желаете удалить себя из базы '
+                                    'данных? Тогда напишите "Отписка"')
+                elif not SomeBool:
+                    with open(r'groups\idGroup.txt', 'a+') as File:
                         File.write(str(user_id) + ', 803б2\n')
                     sender(user_id, 'Вы были успешно подписаны на ежедневное получение расписания группы 803б2')
             elif msg == 'подписка 803б1':
-                if SomeBool == True:
-                    sender(user_id,
-                           'Вы уже есть в нашей базе данных для подписок, желаете удалить себя из базы данных? Тогда напишите "Отписка"')
-                elif SomeBool == False:
-                    with open('groups\idGroup.txt', 'a+') as File:
+                subscribe(user_id)
+                if SomeBool:
+                    sender(user_id, 'Вы уже есть в нашей базе данных для подписок, желаете удалить себя из базы '
+                                    'данных? Тогда напишите "Отписка"')
+                elif not SomeBool:
+                    with open(r'groups\idGroup.txt', 'a+') as File:
                         File.write(str(user_id) + ', 803б1\n')
                     sender(user_id, 'Вы были успешно подписаны на ежедневное получение расписания группы 803б1')
             elif msg == 'подписка 803в1':
-                if SomeBool == True:
-                    sender(user_id,
-                           'Вы уже есть в нашей базе данных для подписок, желаете удалить себя из базы данных? Тогда напишите "Отписка"')
-                elif SomeBool == False:
-                    with open('groups\idGroup.txt', 'a+') as File:
+                subscribe(user_id)
+                if SomeBool:
+                    sender(user_id, 'Вы уже есть в нашей базе данных для подписок, желаете удалить себя из базы '
+                                    'данных? Тогда напишите "Отписка"')
+                elif not SomeBool:
+                    with open(r'groups\idGroup.txt', 'a+') as File:
                         File.write(str(user_id) + ', 803в1\n')
                     sender(user_id, 'Вы были успешно подписаны на ежедневное получение расписания группы 803в1')
             elif msg == 'подписка 803в2':
-                if SomeBool == True:
-                    sender(user_id,
-                           'Вы уже есть в нашей базе данных для подписок, желаете удалить себя из базы данных? Тогда напишите "Отписка"')
-                elif SomeBool == False:
-                    with open('groups\idGroup.txt', 'a+') as File:
+                subscribe(user_id)
+                if SomeBool:
+                    sender(user_id, 'Вы уже есть в нашей базе данных для подписок, желаете удалить себя из базы '
+                                    'данных? Тогда напишите "Отписка"')
+                elif not SomeBool:
+                    with open(r'groups\idGroup.txt', 'a+') as File:
                         File.write(str(user_id) + ', 803в2\n')
                     sender(user_id, 'Вы были успешно подписаны на ежедневное получение расписания группы 803в2')
             elif msg == 'подписка 803г1':
-                if SomeBool == True:
-                    sender(user_id,
-                           'Вы уже есть в нашей базе данных для подписок, желаете удалить себя из базы данных? Тогда напишите "Отписка"')
-                elif SomeBool == False:
-                    with open('groups\idGroup.txt', 'a+') as File:
+                subscribe(user_id)
+                if SomeBool:
+                    sender(user_id, 'Вы уже есть в нашей базе данных для подписок, желаете удалить себя из базы '
+                                    'данных? Тогда напишите "Отписка"')
+                elif not SomeBool:
+                    with open(r'groups\idGroup.txt', 'a+') as File:
                         File.write(str(user_id) + ', 803г1\n')
                     sender(user_id, 'Вы были успешно подписаны на ежедневное получение расписания группы 803г1')
             elif msg == 'подписка 803г2':
                 subscribe(user_id)
-                if SomeBool == True:
+                if SomeBool:
                     sender(user_id, 'Вы уже есть в нашей базе данных для подписок, желаете удалить себя из базы '
                                     'данных? Тогда напишите "Отписка"')
-                elif SomeBool == False:
-                    with open('groups\idGroup.txt', 'a+') as File:
+                elif not SomeBool:
+                    with open(r'groups\idGroup.txt', 'a+') as File:
                         File.write(str(user_id) + ', 803г2\n')
                     sender(user_id, 'Вы были успешно подписаны на ежедневное получение расписания группы 803г2')
             elif msg == 'отписка':
-                unSubscribe(user_id)
-                if SomeBool == True:
+                subscribe(user_id)
+                if SomeBool:
                     sender(user_id, 'Вы были успешно отписаны от ежедневной рассылки расписания')
                 else:
                     sender(user_id, 'Мы не можем вас отписать так как вы не подписаны')
