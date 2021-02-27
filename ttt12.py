@@ -8,26 +8,64 @@ longpoll = VkLongPoll(vk_session)
 global SomeBool
 
 
+# def subscribe(id):
+#     try:
+#         with open(r'groups\idGroup.txt', 'r+') as f:
+#             string_from_file_list = f.readlines()
+#             if len(string_from_file_list) != 0:
+#                 for line in string_from_file_list:
+#                     if line.find(str(id)) != -1:
+#                         ifPersonSubscribed = True
+#                         print(1)
+#                     elif line.find(str(id)) == -1:
+#                         ifPersonSubscribed = False
+#                         print(2)
+#                     return ifPersonSubscribed
+#             else:
+#                 print(3)
+#                 ifPersonSubscribed = False
+#                 return ifPersonSubscribed
+#     except Exception as someException:
+#         print('error' + str(someException))
+
+# def subscribe(id):
+#     try:
+#         with open("groups/idGroup.txt") as subscribeListFile:
+#             SubscribedList = subscribeListFile.readlines()
+#             if len(SubscribedList) != 0:
+#                 print(SubscribedList)
+#                 for SubscribeElement in SubscribedList:
+#                     if SubscribeElement.find(str(id)) != -1:
+#                         print("Найден повтор ")
+#                         return True
+#                     elif SubscribeElement.find(str(id)) == -1:
+#                         print("Повтор не найден")
+#                         return False
+#     except Exception as someException:
+#         print('Возникла ошибка: ' + str(someException))
+global SubscribedBoolean
 def subscribe(id):
     try:
-        with open(r'groups\idGroup.txt', 'r+') as f:
-            string_from_file_list = f.readlines()
-            if len(string_from_file_list) != 0:
-                for line in string_from_file_list:
-                    if line.find(str(id)) != -1:
-                        ifPersonSubscribed = True
-                        print(1)
-                    elif line.find(str(id)) == -1:
-                        ifPersonSubscribed = False
-                        print(2)
-                    return ifPersonSubscribed
-            else:
-                print(3)
-                ifPersonSubscribed = False
-                return ifPersonSubscribed
+        with open("groups/idGroup.txt") as subscribeListFile:
+            SubscribedList = subscribeListFile.readlines()
+            if len(SubscribedList) != 0:
+                print(SubscribedList)
+                SubscribeElementCounter = 0
+                for SubscribeElementCounter in range(0, len(SubscribedList)):
+                    SubscribeElement = SubscribedList[SubscribeElementCounter]
+                    print(SubscribeElement)
+                    if SubscribeElement.find(str(id)) != -1:
+                        print("Найден повтор ")
+                        SubscribedBoolean = True
+                        break
+                    elif SubscribeElement.find(str(id)) == -1:
+                        print("Повтор не найден")
+                        SubscribedBoolean = False
+                    print(SubscribeElement)
+                    SubscribeElementCounter += 1
+                return SubscribedBoolean
     except Exception as someException:
-        print('error' + str(someException))
-    f.close()
+        print('Возникла ошибка: ' + str(someException))
 
 
 # def unSubscribe (id):
@@ -45,7 +83,7 @@ for event in longpoll.listen():
         if event.to_me:
             msg = event.text.lower()
             user_id = event.user_id
-            print(msg)
+            print(str(msg) + " от " + str(user_id))
 
             # with open(r'groups\idGroup.txt') as File:
             #     Readlines = File.readlines()
