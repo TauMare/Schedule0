@@ -59,19 +59,27 @@ for event in longpoll.listen():
             user_id = event.user_id
             print(str(msg) + " от " + str(user_id))
             SomeBool = is_subscribed(user_id)
-            if msg == 'подписка 803г2':
-                if SomeBool:
-                    sender(user_id, 'Вы уже есть в нашей базе данных для подписок, желаете удалить себя из базы '
-                                    'данных? Тогда напишите "Отписка"')
-                elif not SomeBool:
-                    subscribing(msg, user_id)
-                    sender(user_id, 'Вы были успешно подписаны на ежедневное получение расписания группы 803г2')
+            GroupComponent = [" 801а1", " 801а2", " 801б1", " 801б2", " 803а1", " 803а2", " 803б1", " 803б2", " 803в1",
+                              " 803в2", " 803г1", " 803г2"]
+            for num_group, val_group in enumerate(GroupComponent):
+                sub_gen = "подписка" + val_group
+                if msg == sub_gen:
+                    if SomeBool:
+                        sender(user_id, 'Вы уже есть в нашей базе данных для подписок, желаете удалить себя из базы '
+                                        'данных? Тогда напишите "Отписка"')
+                    elif not SomeBool:
+                        subscribing(msg, user_id)
+                        sender(user_id, 'Вы были успешно подписаны на ежедневное получение расписания группы' +
+                               val_group)
+                    break
 
-            elif msg == 'отписка':
-                if SomeBool:
-                    unsubscribing(user_id)
-                    sender(user_id, 'Вы были успешно отписаны от ежедневной рассылки расписания')
-                else:
-                    sender(user_id, 'Мы не можем вас отписать так как вы не подписаны')
-            else:
-                sender(user_id, 'напиши что-нибудь нормальное')
+                if msg == 'отписка':
+                    if SomeBool:
+                        unsubscribing(user_id)
+                        sender(user_id, 'Вы были успешно отписаны от ежедневной рассылки расписания')
+                    else:
+                        sender(user_id, 'Мы не можем вас отписать так как вы не подписаны')
+                    break
+                elif not 'подписка' + val_group:
+                    sender(user_id, 'напиши что-нибудь нормальное')
+                    break
