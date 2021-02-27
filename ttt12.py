@@ -9,38 +9,37 @@ longpoll = VkLongPoll(vk_session)
 global SubscribedBoolean
 
 
-def isSubscribed(id):
+def is_subscribed(id_to_check):
     try:
         with open("groups/idGroup.txt") as subscribeListFile:
-            SubscribedList = subscribeListFile.readlines()
-            if len(SubscribedList) != 0:
-                SubscribeElementCounter = 0
-                for SubscribeElementCounter in range(0, len(SubscribedList)):
-                    SubscribeElement = SubscribedList[SubscribeElementCounter]
-                    if SubscribeElement.find(str(id)) != -1:
+            subscribed_list = subscribeListFile.readlines()
+            if len(subscribed_list) != 0:
+                for subscribe_element_counter in range(0, len(subscribed_list)):
+                    subscribe_element = subscribed_list[subscribe_element_counter]
+                    if subscribe_element.find(str(id_to_check)) != -1:
                         print("Найден повтор ")
-                        SubscribedBoolean = True
+                        subscribed_boolean = True
                         break
-                    elif SubscribeElement.find(str(id)) == -1:
+                    elif subscribe_element.find(str(id_to_check)) == -1:
                         print("Повтор не найден")
-                        SubscribedBoolean = False
-                    SubscribeElementCounter += 1
-                return SubscribedBoolean
-            elif len(SubscribedList) == 0:
-                SubscribedBoolean = False
-                return SubscribedBoolean
+                        subscribed_boolean = False
+                    subscribe_element_counter += 1
+                return subscribed_boolean
+            elif len(subscribed_list) == 0:
+                subscribed_boolean = False
+                return subscribed_boolean
     except Exception as someException:
         print('Возникла ошибка: ' + str(someException))
 
 
 def unsubscribing(user_unsub_id):
-    with open("groups\idGroup.txt") as File2:
-        UnSubList = File2.readlines()
+    with open(r"groups\idGroup.txt") as File2:
+        un_sub_list = File2.readlines()
     with open(r'groups\idGroup.txt', 'w+') as File:
-        for UnSubElement in UnSubList:
+        for UnSubElement in un_sub_list:
             if UnSubElement.find(str(user_unsub_id)) != -1:
-                UnSubList.remove(UnSubElement)
-        File.writelines(UnSubList)
+                un_sub_list.remove(UnSubElement)
+        File.writelines(un_sub_list)
 
 
 def subscribing(message_to_sub, user_sub_id):
@@ -48,8 +47,8 @@ def subscribing(message_to_sub, user_sub_id):
         File.write(str(user_sub_id) + ', ' + message_to_sub[9:14] + '\n')
 
 
-def sender(id, text):
-    vk_session.method('messages.send', {'user_id': id, 'message': text, 'random_id': 0})
+def sender(id_to_send, text):
+    vk_session.method('messages.send', {'user_id': id_to_send, 'message': text, 'random_id': 0})
 
 
 for event in longpoll.listen():
@@ -59,13 +58,12 @@ for event in longpoll.listen():
             msg = event.text.lower()
             user_id = event.user_id
             print(str(msg) + " от " + str(user_id))
-
-            SomeBool = isSubscribed(user_id)
+            SomeBool = is_subscribed(user_id)
             if msg == 'подписка 803г2':
                 if SomeBool:
                     sender(user_id, 'Вы уже есть в нашей базе данных для подписок, желаете удалить себя из базы '
                                     'данных? Тогда напишите "Отписка"')
-                elif SomeBool == False:
+                elif not SomeBool:
                     subscribing(msg, user_id)
                     sender(user_id, 'Вы были успешно подписаны на ежедневное получение расписания группы 803г2')
 
@@ -77,4 +75,3 @@ for event in longpoll.listen():
                     sender(user_id, 'Мы не можем вас отписать так как вы не подписаны')
             else:
                 sender(user_id, 'напиши что-нибудь нормальное')
-
