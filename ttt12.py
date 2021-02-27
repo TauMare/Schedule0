@@ -11,9 +11,8 @@ global SomeBool
 def subscribe(id):
     try:
         with open(r'groups\idGroup.txt', 'r+') as f:
-            if len(f.readlines()) != 0:
-                with open(r'groups\idGroup.txt', 'r+') as f:
-                    string_from_file_list = f.readlines()
+            string_from_file_list = f.readlines()
+            if len(string_from_file_list) != 0:
                 for line in string_from_file_list:
                     if line.find(str(id)) != -1:
                         ifPersonSubscribed = True
