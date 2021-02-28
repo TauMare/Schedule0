@@ -9,6 +9,24 @@ import os
 from iteration_utilities import unique_everseen
 from iteration_utilities import duplicates
 
+# def closingContours(input_image_path,output_image_path):
+#     image_grayscale = cv2.imread(input_image_path,cv2.IMREAD_GRAYSCALE)
+#     canny = cv2.Canny(image_grayscale, 125, 175)
+#     contours, hierarchies = cv2.findContours(canny, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+#     done_contours = cv2.drawContours(image_grayscale, contours, -1, (0, 0, 0), 2)
+#     cv2.imwrite(output_image_path, done_contours)
+
+def closingContours(input_image_path,output_image_path):
+    image_grayscale = cv2.imread(input_image_path,cv2.IMREAD_GRAYSCALE)
+    canny = cv2.Canny(image_grayscale, 125, 175)
+    contours, hierarchies = cv2.findContours(canny, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+    for cnt in contours:
+        x, y, w, h = cv2.boundingRect(cnt)
+        if h > 100 and w > 50:
+            cv2.rectangle(image_grayscale,(x,y),(x+w,y+h), (0, 0, 0), 5)
+    cv2.imwrite(output_image_path, image_grayscale)
+
+
 now = datetime.datetime.now()
 todaysdayNum = now.isoweekday()
 #Какой-то коммент2
@@ -16,11 +34,13 @@ pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesse
 config = '--oem 3 --psm 6'
 
 # Переводим PDF в изображение с названием PDFtoImagePicture
-pages = convert_from_path('pdfs/testfile6.pdf', 500, poppler_path=r"C:\Program Files\poppler-21.01.0\Library\bin")
+pages = convert_from_path('pdfs/testfile7.pdf', 500, poppler_path=r"C:\Program Files\poppler-21.01.0\Library\bin")
 for page in pages:
     page.save('firstcropimg/ProcessingImages/PDFtoImagePicture.png', 'PNG')
 
-testingweekdays_image_grayscale = cv2.imread('firstcropimg/ProcessingImages/PDFtoImagePicture.png', cv2.IMREAD_GRAYSCALE)
+closingContours('firstcropimg/ProcessingImages/PDFtoImagePicture.png','kekw.png')
+
+testingweekdays_image_grayscale = cv2.imread('kekw.png', cv2.IMREAD_GRAYSCALE)
 # _, threshold = cv2.threshold(testingweekdays_image_grayscale, 110, 255, cv2.THRESH_BINARY)
 # contours, _ = cv2.findContours(threshold, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
 canny = cv2.Canny(testingweekdays_image_grayscale, 125, 175)
@@ -29,7 +49,7 @@ testDaysList = []
 testCropNumCounterMarked = 0
 for cnt in contours:
     x, y, w, h = bbox = cv2.boundingRect(cnt)
-    if 1000 < h < 2000 and w < 300:
+    if 1000 < h < 2500 and 10 < w < 300:
         x = bbox[0]
         y = bbox[1]
         w = bbox[2]
@@ -82,14 +102,15 @@ print(FoundDateInList)
 print("foundIndex")
 print(foundIndex)
 # Прописать, чтобы корректно обрабатывалось воскресенье
-if daysDict[todaysdayNum+2] != daysDict[7] and FoundDateInList != "День не был найден":
+if daysDict[todaysdayNum+1] != daysDict[7] and FoundDateInList != "День не был найден":
+    print(exit)
+    exit()
 # Проверяем, есть ли в изображении PDFtoImagePicture примитивные основные контуры и отрисовываем их в случае нахождения
 # После - сохраняем файл с обведенными найденными контурами, обрезаем по каждому контуру и сохраняем с названием intelcropped(i)
     intelPictureBeforeFirstCrop_colored = cv2.imread('firstcropimg/ProcessingImages/PDFtoImagePicture.png', cv2.IMREAD_COLOR)
     intelPictureBeforeFirstCrop_grayscale = cv2.imread('firstcropimg/ProcessingImages/PDFtoImagePicture.png', cv2.IMREAD_GRAYSCALE)
     canny = cv2.Canny(intelPictureBeforeFirstCrop_grayscale, 125, 175)
     contours, hierarchies = cv2.findContours(canny, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-    DaysList = []
     if len(contours) == 1 or len(contours) == 2:
         CropNumCounterMarked = 0
         for cnt in contours:
@@ -333,7 +354,10 @@ if daysDict[todaysdayNum+2] != daysDict[7] and FoundDateInList != "День не
             dataClear = dataClear.replace("ю ", "")
             dataClear = dataClear.replace("Слвоенная","Сдвоенная")
             dataClear = dataClear.replace("IIM.02", "ПМ.02")
-            dataClear = dataClear.replace("У\\У","W")
+            dataClear = dataClear.replace("У\\У", "W")
+            dataClear = dataClear.replace("%", "5") # < аб
+            dataClear = dataClear.replace("< аб", "Лаб") #Лоб.
+            dataClear = dataClear.replace("Лоб. ", "Лаб. ")
             print("Была найдена строка " + dataClear)
             print(contoursLenght)
             if len(dataClear) == 2:
@@ -962,30 +986,31 @@ if daysDict[todaysdayNum+2] != daysDict[7] and FoundDateInList != "День не
         print(len(FifthAnchorLineListCopyOctuple))
 
         for element in FirstAnchorLineListCopyOctuple:
-            if element == "Свосьмеренная пара" or element == "Счетверенная пара" or element == "Сдвоенная пара":
+            if element == "Свосьмеренная пара" or element == "Счетверенная пара" or element == "Сдвоенная пара" or element == "Окно" or element == "Пустое поле":
                 elementIndex = FirstAnchorLineListCopyOctuple.index(element)
                 FirstAnchorLineListCopyOctuple.pop(elementIndex)
-                FirstAnchorLineListCopyOctuple.insert(elementIndex, "Окно")
+                FirstAnchorLineListCopyOctuple.insert(elementIndex, "Отсутствует")
+
         for element in SecondAnchorLineListCopyOctuple:
-            if element == "Свосьмеренная пара" or element == "Счетверенная пара" or element == "Сдвоенная пара":
+            if element == "Свосьмеренная пара" or element == "Счетверенная пара" or element == "Сдвоенная пара" or element == "Окно" or element == "Пустое поле":
                 elementIndex = SecondAnchorLineListCopyOctuple.index(element)
                 SecondAnchorLineListCopyOctuple.pop(elementIndex)
-                SecondAnchorLineListCopyOctuple.insert(elementIndex, "Окно")
+                SecondAnchorLineListCopyOctuple.insert(elementIndex, "Отсутствует")
         for element in ThirdAnchorLineListCopyOctuple:
-            if element == "Свосьмеренная пара" or element == "Счетверенная пара" or element == "Сдвоенная пара":
+            if element == "Свосьмеренная пара" or element == "Счетверенная пара" or element == "Сдвоенная пара" or element == "Окно" or element == "Пустое поле":
                 elementIndex = ThirdAnchorLineListCopyOctuple.index(element)
                 ThirdAnchorLineListCopyOctuple.pop(elementIndex)
-                ThirdAnchorLineListCopyOctuple.insert(elementIndex, "Окно")
+                ThirdAnchorLineListCopyOctuple.insert(elementIndex, "Отсутствует")
         for element in FourthAnchorLineListCopyOctuple:
-            if element == "Свосьмеренная пара" or element == "Счетверенная пара" or element == "Сдвоенная пара":
+            if element == "Свосьмеренная пара" or element == "Счетверенная пара" or element == "Сдвоенная пара" or element == "Окно" or element == "Пустое поле":
                 elementIndex = FourthAnchorLineListCopyOctuple.index(element)
                 FourthAnchorLineListCopyOctuple.pop(elementIndex)
-                FourthAnchorLineListCopyOctuple.insert(elementIndex, "Окно")
+                FourthAnchorLineListCopyOctuple.insert(elementIndex, "Отсутствует")
         for element in FifthAnchorLineListCopyOctuple:
-            if element == "Свосьмеренная пара" or element == "Счетверенная пара" or element == "Сдвоенная пара":
+            if element == "Свосьмеренная пара" or element == "Счетверенная пара" or element == "Сдвоенная пара" or element == "Окно" or element == "Пустое поле":
                 elementIndex = FifthAnchorLineListCopyOctuple.index(element)
                 FifthAnchorLineListCopyOctuple.pop(elementIndex)
-                FifthAnchorLineListCopyOctuple.insert(elementIndex, "Окно")
+                FifthAnchorLineListCopyOctuple.insert(elementIndex, "Отсутствует")
 
         incounter = 0
         for incounter in range(0, len(GroupComponent)):
@@ -1040,3 +1065,5 @@ if daysDict[todaysdayNum+2] != daysDict[7] and FoundDateInList != "День не
         print("Возникла проблемка")
 else:
     print("В таблице не был найден сегодняшний или завтрашний день")
+    print(daysDict[todaysdayNum+1])
+    print(daysDict[7])
